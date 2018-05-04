@@ -90,6 +90,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 		WORDPRESS_DB_USER
 		WORDPRESS_DB_PASSWORD
 		WORDPRESS_DB_NAME
+		WORDPRESS_AGILE_ID
+		WORDPRESS_AGILE_SECRET
 		"${uniqueEnvs[@]/#/WORDPRESS_}"
 		WORDPRESS_TABLE_PREFIX
 		WORDPRESS_DEBUG
@@ -121,6 +123,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 		: "${WORDPRESS_DB_USER:=root}"
 		: "${WORDPRESS_DB_PASSWORD:=}"
 		: "${WORDPRESS_DB_NAME:=wordpress}"
+		: "${WORDPRESS_AGILE_ID:=}"
+		: "${WORDPRESS_AGILE_SECRET:=}"
 
 		# version 4.4.1 decided to switch to windows line endings, that breaks our seds and awks
 		# https://github.com/docker-library/wordpress/issues/116
@@ -165,6 +169,9 @@ EOPHP
 			fi
 			sed -ri -e "s/($start\s*).*($end)$/\1$(sed_escape_rhs "$(php_escape "$value" "$var_type")")\3/" wp-config.php
 		}
+
+		set_config 'AGILE_ID' "$WORDPRESS_AGILE_ID"
+		set_config 'AGIL_SECRET' "$WORDPRESS_AGILE_SECRET"
 
 		set_config 'DB_HOST' "$WORDPRESS_DB_HOST"
 		set_config 'DB_USER' "$WORDPRESS_DB_USER"
