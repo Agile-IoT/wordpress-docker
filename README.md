@@ -1,4 +1,4 @@
-# WordPress docker with to use custom WordPress implementation for AGILE
+# WordPress docker with custom WordPress implementation for AGILE
 
 This project is a fork of [https://github.com/docker-library/wordpress](https://github.com/docker-library/wordpress) and uses a custom or the default WordPress implementations. Currently, we modified only php7.0/apache to use the WordPress implementation from [https://github.com/agile-iot/wordpress](https://github.com/agile-iot/wordpress). All other versions use the default WordPress container.
 ## Setup
