@@ -8,21 +8,44 @@ Clone this repository:
 
 To build and include the modified WordPress implementation with custom identity services, add this to the docker-compose file:
 
-      agile-wordpress:
-        build:
-          context: ./apps/wordpress
-          dockerfile: php7.0/apache/Dockerfile
-        container_name: agile-wordpress
-        restart: always
-        ports:
-          - 80:80/tcp
-        depends_on:
-          - sql-db
-        volumes:
-          - $DATA/wordpress:/var/www/html
-        environment:
-          WORDPRESS_DB_HOST: sql-db:3306
-          WORDPRESS_DB_PASSWORD: root
+  sql-db:
+    #In a rpi use this one 
+    #image: hypriot/rpi-mysql
+    #For intel use this one
+    image: mysql:5.5
+    container_name: sql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306/tcp
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    #this is needed to run the "script" and create the db for wso2is for testing.... comparison paper...
+    #mysql -uroot -proot  -e "create database wso2is"
+    #mysql -uroot -proot  -Dwso2is < /var/wso2is/script
+    #volumes:
+    #  - /home/dp/git/agile/agile-stack/apps/wso2is:/var/wso2is/
+
+
+
+
+  agile-wordpress:
+    build: 
+      context: ./apps/wordpress
+      dockerfile: php7.0/apache/Dockerfile
+    container_name: agile-wordpress
+    restart: always
+    ports:
+      - 80:80/tcp
+    depends_on:
+      sql-db:
+        condition: service_healthy
+
+
+
 
 Where ```sql-db``` is the database service, e. g. MySQL. 
 
